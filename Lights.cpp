@@ -137,6 +137,8 @@ DirectionalLight::SetDirection(float x, float y, float z)
   direction.x = x;
   direction.y = y;
   direction.z = z;
+
+  position = -glm::normalize(direction) * far_plane * 0.3f;
 }
 
 void
@@ -148,6 +150,7 @@ DirectionalLight::SetLight(Shader *shader)
     shader->SetVector3("directionalLights[0].ambient", glm::value_ptr(ambient));
     shader->SetVector3("directionalLights[0].diffuse", glm::value_ptr(diffuse));
     shader->SetVector3("directionalLights[0].specular", glm::value_ptr(specular));
+    shader->SetVector3("directionalLights[0].position", glm::value_ptr(position));
     return;
   }
   if( number == 1 )
@@ -156,6 +159,7 @@ DirectionalLight::SetLight(Shader *shader)
     shader->SetVector3("directionalLights[1].ambient", glm::value_ptr(ambient));
     shader->SetVector3("directionalLights[1].diffuse", glm::value_ptr(diffuse));
     shader->SetVector3("directionalLights[1].specular", glm::value_ptr(specular));
+    shader->SetVector3("directionalLights[1].position", glm::value_ptr(position));
     return;
   }
   if( number == 2 )
@@ -164,6 +168,7 @@ DirectionalLight::SetLight(Shader *shader)
     shader->SetVector3("directionalLights[2].ambient", glm::value_ptr(ambient));
     shader->SetVector3("directionalLights[2].diffuse", glm::value_ptr(diffuse));
     shader->SetVector3("directionalLights[2].specular", glm::value_ptr(specular));
+    shader->SetVector3("directionalLights[2].position", glm::value_ptr(position));
     return;
   }
   if( number == 3 )
@@ -174,4 +179,20 @@ DirectionalLight::SetLight(Shader *shader)
     shader->SetVector3("directionalLights[3].specular", glm::value_ptr(specular));
     return;
   }
+}
+
+ 
+void DirectionalLight::SetLightViewMatrix(Shader * shader)
+{
+  
+  glm::mat4 lightProjection = glm::ortho(-100.0f, 100.0f, -100.0f, 100.0f, near_plane, far_plane); 
+
+
+  glm::mat4 lightView = glm::lookAt(position, 
+                                  glm::vec3( 0.0f, 0.0f,  0.0f), 
+                                  glm::vec3( 0.0f, 1.0f,  0.0f));
+
+  glm::mat4 lightSpaceMatrix = lightProjection * lightView; 
+
+  shader->SetMatrix4("lightSpaceMatrix", glm::value_ptr(lightSpaceMatrix));
 }

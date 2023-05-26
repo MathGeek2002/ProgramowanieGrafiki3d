@@ -65,6 +65,8 @@ class DirectionalLight : public Light
 public:
   int number; // light number
   glm::vec3 direction; // light direction
+  glm::vec3 position;
+  float near_plane = 0.5f, far_plane = 10.f;
 
   DirectionalLight(
     int number_ = 0,                                   // light number
@@ -75,6 +77,7 @@ public:
   );
   void SetDirection(float = 0.f, float = -1.f, float = 0.f);
   void SetLight(Shader*);
+  void SetLightViewMatrix(Shader *);
 };
 
 #endif
