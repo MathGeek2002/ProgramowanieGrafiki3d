@@ -48,13 +48,9 @@ public:
   float angle = 0.f;
 
   Model * box;
+  Model * box2;
 
-  UniformMaterial * gold = new UniformMaterial(
-    0.75164f, 0.60648f, 0.22648f,
-    0.4f * 128.f,
-    0.24725f, 0.1995f, 0.0745f,
-    0.628281f, 0.555802f, 0.366065f
-  );
+  UniformMaterial * gold = new UniformMaterial( UniformMaterial::GOLD );
 
   unsigned int depthMapFBO;
   unsigned int depthMap;
@@ -153,10 +149,14 @@ void MyRenderer::UserInitData()
   box = new Box(1.f,1.f,1.f, materials, 6);
 
   model = glm::mat4(1.f);
-  model = glm::translate(model,glm::vec3(0.f,1.f,0.f));
+  model = glm::translate(model,glm::vec3(0.f,0.9f,0.f));
   box->SetLocalTransform(model);
 
+  box2 = new Box(1.f,1.f,1.f, materials, 6);
 
+  model = glm::mat4(1.f);
+  model = glm::translate(model,glm::vec3(0.2f,1.7f,3.f));
+  box2->SetLocalTransform(model);
 
   glGenFramebuffers(1, &depthMapFBO);  
 
@@ -166,8 +166,10 @@ void MyRenderer::UserInitData()
               SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); 
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); 
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+  float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+  glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 
   glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
   glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
@@ -192,6 +194,7 @@ void MyRenderer::UserClose()
   delete pointLight0;
   delete pointLight1;
   delete box;
+  delete box2;
   delete gold;
 
   glDeleteTextures(1, &depthMap);
@@ -222,11 +225,6 @@ void MyRenderer::UserUpdate(float dt_)
   float y = sin(glm::radians(angle + 270.f));
   float z = cos(glm::radians(angle + 270.f));
   directionalLight0->SetDirection(x,y,z);
-
-  // x = sin(glm::radians(1.77f * angle + 90.f));
-  // y = cos(glm::radians(1.77f * angle + 90.f));
-  // z = 0.f;
-  // directionalLight1->SetDirection(x,y,z);
 }
 
 void MyRenderer::UserDraw()
@@ -243,8 +241,11 @@ void MyRenderer::UserDraw()
 
   glClear(GL_DEPTH_BUFFER_BIT);
 
+  glDisable( GL_CULL_FACE );
   box->Draw(depthShader);
+  box2->Draw(depthShader);
   plane->Draw(depthShader);
+  glEnable( GL_CULL_FACE );
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -264,6 +265,7 @@ void MyRenderer::UserDraw()
 
 
   box->Draw(shadowShader);
+  box2->Draw(depthShader);
   plane->Draw(shadowShader);
 
   // shader2->Use();
