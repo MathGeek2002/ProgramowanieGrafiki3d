@@ -9,6 +9,7 @@
 #include "Lights.h"
 #include "Materials.h"
 #include "Image.h"
+#include "Sphere.h"
 
 class MyRenderer : public RenderEngine
 {
@@ -50,11 +51,13 @@ public:
   Model * box;
   Model * box2;
 
+  Model * sphere;
+
   UniformMaterial * gold = new UniformMaterial( UniformMaterial::GOLD );
 
   unsigned int depthMapFBO;
   unsigned int depthMap;
-  const unsigned int SHADOW_WIDTH = 4096, SHADOW_HEIGHT = 4096;
+  const unsigned int SHADOW_WIDTH = 8192, SHADOW_HEIGHT = 8192;
 };
 
 void MyRenderer::UserInitData()
@@ -138,10 +141,10 @@ void MyRenderer::UserInitData()
     1.f,0.1f,0.05f);
 
   plane = new Plane(
-    100, 100, 1.f, 1.f, Model::MATERIAL, 0.1f, 0.9f, 0.1f
+    200, 200, 1.f, 1.f, Model::MATERIAL, 0.1f, 0.9f, 0.1f
   );
   glm::mat4 model(1.f);
-  model = glm::scale(model, glm::vec3(10.f, 1.f, 10.f));
+  model = glm::scale(model, glm::vec3(101.f, 1.f, 101.f));
   plane->SetLocalTransform(model);
 
   Material * materials[6] = {gold,gold,gold,gold,gold,gold};
@@ -149,14 +152,20 @@ void MyRenderer::UserInitData()
   box = new Box(1.f,1.f,1.f, materials, 6);
 
   model = glm::mat4(1.f);
-  model = glm::translate(model,glm::vec3(0.f,0.9f,0.f));
+  model = glm::translate(model,glm::vec3(0.f,1.f,0.f));
   box->SetLocalTransform(model);
 
   box2 = new Box(1.f,1.f,1.f, materials, 6);
 
   model = glm::mat4(1.f);
-  model = glm::translate(model,glm::vec3(0.2f,1.7f,3.f));
+  model = glm::translate(model,glm::vec3(0.8f,1.7f,3.f));
   box2->SetLocalTransform(model);
+
+  sphere = new Sphere(64,64,0.5f, glm::vec3(0.f,0.f,1.f));
+
+  model = glm::mat4(1.f);
+  model = glm::translate(model,glm::vec3(-0.8f,1.1f,-3.f));
+  sphere->SetLocalTransform(model);
 
   glGenFramebuffers(1, &depthMapFBO);  
 
@@ -195,6 +204,7 @@ void MyRenderer::UserClose()
   delete pointLight1;
   delete box;
   delete box2;
+  delete sphere;
   delete gold;
 
   glDeleteTextures(1, &depthMap);
@@ -242,9 +252,12 @@ void MyRenderer::UserDraw()
   glClear(GL_DEPTH_BUFFER_BIT);
 
   glDisable( GL_CULL_FACE );
+
   box->Draw(depthShader);
   box2->Draw(depthShader);
   plane->Draw(depthShader);
+  sphere->Draw(depthShader);
+
   glEnable( GL_CULL_FACE );
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -265,14 +278,16 @@ void MyRenderer::UserDraw()
 
 
   box->Draw(shadowShader);
-  box2->Draw(depthShader);
+  box2->Draw(shadowShader);
+  sphere->Draw(shadowShader);
   plane->Draw(shadowShader);
 
-  // shader2->Use();
-  // view->SetView(shader2);
-  // ambientLight->SetLight(shader2);
-  // directionalLight0->SetLight(shader2);
-  // box->Draw(shader2);
+  //  shader2->Use();
+  //  view->SetView(shader2);
+  //  ambientLight->SetLight(shader2);
+  //  directionalLight0->SetLight(shader2);
+  //  box->Draw(shader2);
+  //  plane->Draw(shader2);
 
   // // Draw textured objects
   // shader3->Use();

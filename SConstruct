@@ -18,7 +18,8 @@ env.sources += env.Object(['RenderEngine.cpp',
                            'Box.cpp',
                            'Lights.cpp',
                            'Materials.cpp',
-                           'Image.cpp'])
+                           'Image.cpp',
+                           'Sphere.cpp'])
 
 
 env.Program(target = 'Program',

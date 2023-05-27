@@ -138,7 +138,7 @@ DirectionalLight::SetDirection(float x, float y, float z)
   direction.y = y;
   direction.z = z;
 
-  position = -glm::normalize(direction) * far_plane * 0.3f;
+  position = -glm::normalize(direction) * far_plane * 0.8f;
 }
 
 void
