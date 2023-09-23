@@ -31,33 +31,32 @@ public:
   // Shader program
   Shader *shader0, *shader1, *shader2, *shader3;
 
-  Shader * depthShader,* shadowShader;
+  Shader *depthShader, *shadowShader;
   
-  Material * grass;
+  Material *grass;
 
   // objects
   Model *plane;
 
-  DirectionalLight * directionalLight0;
-  DirectionalLight * directionalLight1;
+  DirectionalLight *directionalLight0;
+  DirectionalLight *directionalLight1;
 
-  AmbientLight * ambientLight;
+  AmbientLight *ambientLight;
 
-  PointLight * pointLight0;
-  PointLight * pointLight1;
+  PointLight *pointLight0;
+  PointLight *pointLight1;
 
   float angle = 0.f;
 
-  Model * box;
-  Model * box2;
-
-  Model * sphere;
+  Model *box;
+  Model *box2;
+  Model *sphere;
 
   UniformMaterial * gold = new UniformMaterial( UniformMaterial::GOLD );
 
   unsigned int depthMapFBO;
   unsigned int depthMap;
-  const unsigned int SHADOW_WIDTH = 8192, SHADOW_HEIGHT = 8192;
+  const unsigned int SHADOW_WIDTH = 4096, SHADOW_HEIGHT = 4096;
 };
 
 void MyRenderer::UserInitData()
@@ -239,7 +238,7 @@ void MyRenderer::UserUpdate(float dt_)
 
 void MyRenderer::UserDraw()
 {
-
+  //shadow begin
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   depthShader->Use();
@@ -255,14 +254,14 @@ void MyRenderer::UserDraw()
 
   box->Draw(depthShader);
   box2->Draw(depthShader);
-  plane->Draw(depthShader);
   sphere->Draw(depthShader);
+  plane->Draw(depthShader);
 
   glEnable( GL_CULL_FACE );
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-
+  //shadowEnd
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -281,20 +280,6 @@ void MyRenderer::UserDraw()
   box2->Draw(shadowShader);
   sphere->Draw(shadowShader);
   plane->Draw(shadowShader);
-
-  //  shader2->Use();
-  //  view->SetView(shader2);
-  //  ambientLight->SetLight(shader2);
-  //  directionalLight0->SetLight(shader2);
-  //  box->Draw(shader2);
-  //  plane->Draw(shader2);
-
-  // // Draw textured objects
-  // shader3->Use();
-  // view->SetView(shader3);
-  // ambientLight->SetLight(shader3);
-  // directionalLight0->SetLight(shader3);
-  // plane->Draw(shader3);
 }
 
 void MyRenderer::UserUpdateView(SDL_Event &)

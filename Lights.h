@@ -66,7 +66,7 @@ public:
   int number; // light number
   glm::vec3 direction; // light direction
   glm::vec3 position;
-  float near_plane = 0.5f, far_plane = 80.f;
+  float near_plane = 0.5f, far_plane = 100.f;
 
   DirectionalLight(
     int number_ = 0,                                   // light number

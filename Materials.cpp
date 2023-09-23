@@ -35,7 +35,7 @@ TextureMaterial::TextureMaterial(
 
   Image *tex2d = new Image(difName);
 
-  glGenTextures(1,&diffuse);
+  glGenTextures(1, &diffuse);
   glBindTexture(GL_TEXTURE_2D, diffuse);
   glTexImage2D(
     GL_TEXTURE_2D,0,GL_RGBA,tex2d->w,tex2d->h,0,
@@ -51,7 +51,7 @@ TextureMaterial::TextureMaterial(
   );
 
   if( speName == nullptr ){
-    glGenTextures(1,&specular);
+    glGenTextures(1, &specular);
     glBindTexture(GL_TEXTURE_2D, specular);
     glTexImage2D(
       GL_TEXTURE_2D,0,GL_RGBA,tex2d->w,tex2d->h,0,
@@ -68,7 +68,7 @@ TextureMaterial::TextureMaterial(
   }
 
   if( ambName == nullptr ){
-    glGenTextures(1,&ambient);
+    glGenTextures(1, &ambient);
     glBindTexture(GL_TEXTURE_2D, ambient);
     glTexImage2D(
       GL_TEXTURE_2D,0,GL_RGBA,tex2d->w,tex2d->h,0,

@@ -1,6 +1,6 @@
 #version 330 core
-out vec4 FragColor;
 
+out vec4 FragColor;
 
 in VS_OUT {
     vec3 FragPos;
@@ -71,7 +71,7 @@ void main()
     float diff = max(dot(lightDir, normal), 0.0);
     vec3 diffuse = diff * directionalLights[0].diffuse;
 
-    if(directionalLights[0].position.y < 0)
+    if(directionalLights[0].position.y < 0) //hack
       diffuse = vec3(0.0);
 
     // specular
@@ -103,8 +103,9 @@ float ShadowCalculation(vec4 fragPosLightSpace,float bias)
     float shadow = 0.0;
 
     if(projCoords.z > 1.0)
-        return shadow;
-
+    {
+      return shadow;
+    }
 
     vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
     for(int x = -1; x <= 1; ++x)

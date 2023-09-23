@@ -1,4 +1,5 @@
 #include "Lights.h"
+#include <iostream>
 
 PointLight::PointLight(
   float x, float y, float z,    // position
@@ -144,41 +145,13 @@ DirectionalLight::SetDirection(float x, float y, float z)
 void
 DirectionalLight::SetLight(Shader *shader)
 {
-  if( number == 0 )
-  {
-    shader->SetVector3("directionalLights[0].direction", glm::value_ptr(direction));
-    shader->SetVector3("directionalLights[0].ambient", glm::value_ptr(ambient));
-    shader->SetVector3("directionalLights[0].diffuse", glm::value_ptr(diffuse));
-    shader->SetVector3("directionalLights[0].specular", glm::value_ptr(specular));
-    shader->SetVector3("directionalLights[0].position", glm::value_ptr(position));
-    return;
-  }
-  if( number == 1 )
-  {
-    shader->SetVector3("directionalLights[1].direction", glm::value_ptr(direction));
-    shader->SetVector3("directionalLights[1].ambient", glm::value_ptr(ambient));
-    shader->SetVector3("directionalLights[1].diffuse", glm::value_ptr(diffuse));
-    shader->SetVector3("directionalLights[1].specular", glm::value_ptr(specular));
-    shader->SetVector3("directionalLights[1].position", glm::value_ptr(position));
-    return;
-  }
-  if( number == 2 )
-  {
-    shader->SetVector3("directionalLights[2].direction", glm::value_ptr(direction));
-    shader->SetVector3("directionalLights[2].ambient", glm::value_ptr(ambient));
-    shader->SetVector3("directionalLights[2].diffuse", glm::value_ptr(diffuse));
-    shader->SetVector3("directionalLights[2].specular", glm::value_ptr(specular));
-    shader->SetVector3("directionalLights[2].position", glm::value_ptr(position));
-    return;
-  }
-  if( number == 3 )
-  {
-    shader->SetVector3("directionalLights[3].direction", glm::value_ptr(direction));
-    shader->SetVector3("directionalLights[3].ambient", glm::value_ptr(ambient));
-    shader->SetVector3("directionalLights[3].diffuse", glm::value_ptr(diffuse));
-    shader->SetVector3("directionalLights[3].specular", glm::value_ptr(specular));
-    return;
-  }
+  auto id = std::to_string(number);
+  shader->SetVector3(("directionalLights[" + id + "].direction").c_str(), glm::value_ptr(direction));
+  shader->SetVector3(("directionalLights[" + id + "].ambient").c_str(), glm::value_ptr(ambient));
+  shader->SetVector3(("directionalLights[" + id + "].diffuse").c_str(), glm::value_ptr(diffuse));
+  shader->SetVector3(("directionalLights[" + id + "].specular").c_str(), glm::value_ptr(specular));
+  shader->SetVector3(("directionalLights[" + id + "].position").c_str(), glm::value_ptr(position));
+  
 }
 
  
